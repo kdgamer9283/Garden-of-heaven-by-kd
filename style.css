@@ -1,0 +1,257 @@
+:root {
+  --ink: #fff4fa;
+  --soft: rgba(255, 228, 244, 0.72);
+  --glass: rgba(255, 255, 255, 0.09);
+  --glass-hi: rgba(255, 255, 255, 0.2);
+  --rose: #ff6fa8;
+  --display: "Cormorant Garamond", "Georgia", serif;
+  --ui: "Quicksand", "Segoe UI", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #0b0620;
+  color: var(--ink);
+  font-family: var(--ui);
+  -webkit-tap-highlight-color: transparent;
+}
+
+#garden {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><text y='24' font-size='24'>🌸</text></svg>") 16 16, crosshair;
+  touch-action: none;
+}
+
+/* ---- header ---- */
+.top {
+  position: fixed;
+  top: clamp(14px, 4vh, 40px);
+  left: 0;
+  right: 0;
+  text-align: center;
+  pointer-events: none;
+  padding: 0 16px;
+  animation: titleIn 2.4s ease-out both;
+}
+
+.top h1 {
+  margin: 0;
+  font-family: var(--display);
+  font-style: italic;
+  font-weight: 600;
+  font-size: clamp(2rem, 6vw, 4rem);
+  letter-spacing: 0.01em;
+  text-shadow: 0 0 18px rgba(255, 140, 200, 0.75), 0 0 52px rgba(255, 90, 170, 0.45);
+}
+
+.dedication {
+  margin: 4px 0 8px;
+  font-family: var(--display);
+  font-style: italic;
+  font-size: clamp(1.05rem, 2.6vw, 1.5rem);
+  color: var(--soft);
+}
+
+#nameInput {
+  pointer-events: auto;
+  width: min(260px, 70vw);
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: var(--glass);
+  color: var(--ink);
+  font: 400 0.85rem var(--ui);
+  text-align: center;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: border-color 0.25s, background 0.25s;
+}
+#nameInput::placeholder { color: rgba(255, 228, 244, 0.5); }
+#nameInput:focus { outline: none; border-color: var(--rose); background: var(--glass-hi); }
+
+@keyframes titleIn {
+  from { opacity: 0; transform: translateY(-14px); filter: blur(8px); }
+  to   { opacity: 1; transform: none; filter: none; }
+}
+
+/* ---- hint ---- */
+.hint {
+  position: fixed;
+  left: 50%;
+  bottom: 18vh;
+  margin: 0;
+  transform: translateX(-50%);
+  font-family: var(--display);
+  font-style: italic;
+  font-size: clamp(1.1rem, 3vw, 1.7rem);
+  color: var(--ink);
+  text-shadow: 0 0 14px rgba(255, 120, 190, 0.8);
+  pointer-events: none;
+  white-space: nowrap;
+  animation: pulse 2.6s ease-in-out infinite;
+  transition: opacity 0.9s;
+}
+.hint.gone { opacity: 0; animation: none; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 1; }
+}
+
+/* ---- controls ---- */
+.controls {
+  position: fixed;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.controls button {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: var(--glass);
+  font-size: 1.2rem;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+}
+.controls button:hover { transform: scale(1.12); background: var(--glass-hi); box-shadow: 0 0 18px rgba(255, 110, 180, 0.55); }
+.controls button:active { transform: scale(0.94); }
+.controls button:focus-visible,
+.credit:focus-visible { outline: 2px solid var(--rose); outline-offset: 3px; }
+
+/* ---- music player ---- */
+.music-card {
+  position: fixed;
+  left: 50%;
+  bottom: 52px;
+  width: min(380px, 92vw);
+  transform: translate(-50%, 24px);
+  opacity: 0;
+  pointer-events: none;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 0 30px rgba(255, 110, 180, 0.35);
+  transition: opacity 0.5s, transform 0.5s;
+}
+.music-card.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+.music-card iframe { display: block; border: 0; }
+
+.volume-control {
+  position: fixed;
+  right: 20px;
+  bottom: 70px;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 10px 14px;
+  border-radius: 30px;
+
+  background: rgba(15, 8, 35, 0.75);
+  backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(255, 255, 255, 0.15);
+
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+}
+
+.volume-control span {
+  font-size: 18px;
+}
+
+#volumeSlider {
+  width: 100px;
+  cursor: pointer;
+  accent-color: #dca8ff;
+}
+
+.kd-watermark {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+
+  z-index: 9999;
+
+  font-family: "Cormorant Garamond", serif;
+  font-size: 24px;
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: 3px;
+
+  color: rgba(255, 255, 255, 0.55);
+
+  text-shadow:
+    0 0 8px rgba(220, 168, 255, 0.45),
+    0 0 18px rgba(220, 168, 255, 0.2);
+
+  pointer-events: none;
+  user-select: none;
+
+  opacity: 0.75;
+}
+
+.kd-watermark span {
+  color: rgba(255, 150, 210, 0.8);
+  font-size: 16px;
+  margin-left: 3px;
+}
+
+/* ---- counter + credit ---- */
+.counter {
+  position: fixed;
+  left: 16px;
+  top: 16px;
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--soft);
+  pointer-events: none;
+}
+
+.credit {
+  position: fixed;
+  left: 16px;
+  bottom: 12px;
+  font-size: 0.9rem;
+  color: var(--soft);
+  pointer-events: none;
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
+}
+.credit strong { color: var(--ink); font-weight: 600; letter-spacing: 0.04em; }
+.beat { display: inline-block; color: var(--rose); animation: beat 1.4s ease-in-out infinite; }
+
+@keyframes beat {
+  0%, 100% { transform: scale(1); }
+  20%      { transform: scale(1.3); }
+  40%      { transform: scale(1); }
+  60%      { transform: scale(1.18); }
+}
+
+@media (max-width: 560px) {
+  .music-card { bottom: 100px; }
+  .controls { top: auto; bottom: 46px; right: 50%; transform: translateX(50%); flex-direction: row; }
+  .controls button { width: 42px; height: 42px; }
+  .hint { bottom: 26vh; }
+  .credit { left: 50%; transform: translateX(-50%); white-space: nowrap; }
+  .counter { left: 50%; transform: translateX(-50%); top: auto; bottom: 12px; display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .top, .hint, .beat { animation: none; }
+}
